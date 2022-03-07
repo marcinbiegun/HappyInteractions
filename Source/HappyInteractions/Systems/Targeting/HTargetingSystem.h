@@ -22,7 +22,7 @@ struct FHTargetable {
  *
  * The targetable components will be visible if they are inside the main sphere component.
  */
-UCLASS()
+UCLASS(ClassGroup="HappyInteractions", meta=(DisplayName = "Targeting System", BlueprintSpawnableComponent))
 class UHTargetingSystem : public USphereComponent
 {
 	GENERATED_BODY()
@@ -32,8 +32,10 @@ public:
 	UHTargetingSystem();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+
+	UFUNCTION(BlueprintCallable)
 	void Use();
+	
 	void SetSystemDisabled(bool bInDisabled);
 
 protected:

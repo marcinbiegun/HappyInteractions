@@ -14,7 +14,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogHUserInterface, Log, All);
  *
  * It requires to have TargetableComponent as a parent component to work properly.
  */
-UCLASS(Blueprintable)
+UCLASS(ClassGroup="HappyInteractions", meta=(DisplayName = "Targetable Icon Component", BlueprintSpawnableComponent))
 class UHTargetableIconComponent : public UWidgetComponent
 {
 	GENERATED_BODY()

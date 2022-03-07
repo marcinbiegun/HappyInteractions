@@ -7,7 +7,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
-#include "Systems/Targeting/HTargetingSystem.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -35,10 +34,6 @@ AHappyInteractionsCharacter::AHappyInteractionsCharacter()
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
-
-	// Added by @HappyInteractions
-	TargetingSystem = CreateDefaultSubobject<UHTargetingSystem>(TEXT("TargetingSystem"));
-	TargetingSystem->SetupAttachment(FirstPersonCameraComponent);
 }
 
 void AHappyInteractionsCharacter::BeginPlay()
@@ -82,9 +77,6 @@ void AHappyInteractionsCharacter::OnPrimaryAction()
 {
 	// Trigger the OnItemUsed Event
 	OnItemUsed.Broadcast();
-
-	// Added by @HappyInteractions
-	TargetingSystem->Use();
 }
 
 void AHappyInteractionsCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)

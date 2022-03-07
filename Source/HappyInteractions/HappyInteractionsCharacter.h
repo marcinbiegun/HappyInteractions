@@ -6,8 +6,6 @@
 #include "GameFramework/Character.h"
 #include "HappyInteractionsCharacter.generated.h"
 
-// Added by @HappyInteractions
-class UHTargetingSystem;
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -80,10 +78,6 @@ protected:
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
 	TouchData	TouchItem;
-
-	// Added by @HappyInteractions
-	UPROPERTY(EditAnywhere)
-	UHTargetingSystem* TargetingSystem;
 	
 protected:
 	// APawn interface

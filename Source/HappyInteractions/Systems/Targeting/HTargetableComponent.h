@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHOnTargetableUse, AActor*, InExecut
  * Box is used for visibility check.
  * Requires TargetableIconComponent as a child component to work properly.
  */
-UCLASS(Blueprintable)
+UCLASS(ClassGroup="HappyInteractions", meta=(DisplayName = "Targetable Component", BlueprintSpawnableComponent))
 class UHTargetableComponent : public UBoxComponent
 {
 	GENERATED_BODY()
