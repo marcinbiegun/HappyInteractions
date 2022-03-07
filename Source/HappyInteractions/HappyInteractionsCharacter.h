@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "HappyInteractionsCharacter.generated.h"
 
+// Added by @HappyInteractions
+class UHTargetingSystem;
+
 class UInputComponent;
 class USkeletalMeshComponent;
 class USceneComponent;
@@ -27,6 +30,7 @@ class AHappyInteractionsCharacter : public ACharacter
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
+
 
 public:
 	AHappyInteractionsCharacter();
@@ -76,6 +80,10 @@ protected:
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
 	TouchData	TouchItem;
+
+	// Added by @HappyInteractions
+	UPROPERTY(EditAnywhere)
+	UHTargetingSystem* TargetingSystem;
 	
 protected:
 	// APawn interface
