@@ -27,17 +27,17 @@ void AHappyFocusActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SelectComponent->OnUse.AddDynamic(this, &AHappyFocusActor::OnUse);
+	SelectComponent->OnSelectUsed.AddDynamic(this, &AHappyFocusActor::OnSelectComponentUsed);
 }
 
 void AHappyFocusActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 	
-	SelectComponent->OnUse.RemoveAll(this);
+	SelectComponent->OnSelectUsed.RemoveAll(this);
 }
 
-void AHappyFocusActor::OnUse(AActor* InExecutor)
+void AHappyFocusActor::OnSelectComponentUsed(AActor* InExecutor)
 {
 	// TODO: try to remove this dependency
 	if (UHappyFocusSystem* FocusSystem = Cast<UHappyFocusSystem>(

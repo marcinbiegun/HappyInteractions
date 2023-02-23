@@ -7,7 +7,7 @@
 
 bool UHappyVariableCondition::IsConditionPassing_Implementation()
 {
-	const FName VariableName = HappyUtils::GameplayTagToFName(Variable);
+	const FName VariableName = HappyUtils::GameplayTagToName(Variable);
 	if (VariableName.IsNone())
 		return false;
 

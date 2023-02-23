@@ -46,7 +46,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	UFUNCTION()
-	void OnUse(AActor* InExecutor);
+	void OnSelectComponentUsed(AActor* InExecutor);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCameraComponent* FocusCameraComponent;

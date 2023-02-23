@@ -31,7 +31,7 @@ public:
 	void InitializeSystem(UCameraComponent* InCameraComponent);
 	void ActivateSystem(AHappyFocusActor* InFocusActor);
 	void DeactivateSystem();
-	bool IsSystemActivated() const { return FocusActor == nullptr; }
+	bool IsSystemActivated() const { return FocusedActor == nullptr; }
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -46,7 +46,7 @@ public:
 protected:
 
 	UPROPERTY()
-	AHappyFocusActor* FocusActor;
+	AHappyFocusActor* FocusedActor;
 	
 	/** Transition time in seconds */
 	UPROPERTY(EditAnywhere)

@@ -10,7 +10,7 @@ void UHappyOnVariableChangedActivator::Initialize(AActor* InOwner)
 {
 	Super::Initialize(InOwner);
 
-	const FName GameVariableName = HappyUtils::GameplayTagToFName(GameVariable);
+	const FName GameVariableName = HappyUtils::GameplayTagToName(GameVariable);
 	if (GameVariableName.IsNone())
 		return;
 	
@@ -27,7 +27,7 @@ void UHappyOnVariableChangedActivator::Deinitialize(AActor* InOwner)
 {
 	Super::Deinitialize(InOwner);
 
-	const FName GameVariableName = HappyUtils::GameplayTagToFName(GameVariable);
+	const FName GameVariableName = HappyUtils::GameplayTagToName(GameVariable);
 	if (GameVariableName.IsNone())
 		return;
 	

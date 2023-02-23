@@ -18,39 +18,45 @@ void UHappyInspectSystem::ActivatedSystem(AHappyInspectActor* InInspectActor)
 	if (!InInspectActor)
 		return;
 
+	if (!Camera)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Cannot start InspectionSystem: camera is nullptr!"));
+		return;
+	}
+
 	OnBeforeSystemActivated.Broadcast(InInspectActor);
 	UE_LOG(LogTemp, Log, TEXT("Inspection started"));
 	
-	InspectActor = InInspectActor;
+	InspectedActor = InInspectActor;
 	ActivatedAt = GetOwner()->GetGameTimeSinceCreation();
 	DeactivatedAt = 0.f;
 	State = EHappyInspectSystemState::Activating;
-	InspectActorOriginalLocation = InspectActor->GetActorLocation();
+	InspectActorOriginalLocation = InspectedActor->GetActorLocation();
 	InspectActorCloseUpLocation = Camera->GetComponentLocation() + Camera->GetForwardVector() * DistanceFromCamera;
 	InspectActorTakeLocation = Camera->GetComponentLocation() + Camera->GetUpVector() * DistanceBelowCameraForTake * -1.f;
-	InspectActorOriginalTransform = InspectActor->GetActorTransform();
-	InspectActor->SetTargetIconHidden(true);
+	InspectActorOriginalTransform = InspectedActor->GetActorTransform();
+	InspectedActor->SetSelectComponentHidden(true);
 	
 	OnBeforeSystemActivated.Broadcast(InInspectActor);
 }
 
 void UHappyInspectSystem::DeactivateSystem()
 {
-	if (!InspectActor)
+	if (!InspectedActor)
 		return;
 
-	OnBeforeSystemDeactivated.Broadcast(InspectActor);
+	OnBeforeSystemDeactivated.Broadcast(InspectedActor);
 	
 	if (State == EHappyInspectSystemState::Activating || State == EHappyInspectSystemState::Activated)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Inspection ended"));
 		State = EHappyInspectSystemState::Deactivating;
 		DeactivatedAt = GetOwner()->GetGameTimeSinceCreation();
-		InspectActorChangedRotation = InspectActor->GetActorRotation();
-		InspectActor->SetTargetIconHidden(false);
+		InspectActorChangedRotation = InspectedActor->GetActorRotation();
+		InspectedActor->SetSelectComponentHidden(false);
 	}
 	
-	OnAfterSystemDeactivated.Broadcast(InspectActor);
+	OnAfterSystemDeactivated.Broadcast(InspectedActor);
 }
 
 void UHappyInspectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActorComponentTickFunction* ThisTickFunction)
@@ -59,9 +65,9 @@ void UHappyInspectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActor
 
 	switch (State) {
 		case EHappyInspectSystemState::Activating:
-			if (InspectActor)
+			if (InspectedActor)
 			{
-				const FVector MoveLeft = InspectActor->GetActorLocation() - InspectActorCloseUpLocation;
+				const FVector MoveLeft = InspectedActor->GetActorLocation() - InspectActorCloseUpLocation;
 				if (MoveLeft.IsNearlyZero())
 				{
 					State = EHappyInspectSystemState::Activated;
@@ -71,31 +77,28 @@ void UHappyInspectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActor
 					const float ElapsedTransitionTime = GetOwner()->GetGameTimeSinceCreation() - ActivatedAt;
 					const float Progress = FMath::Clamp(ElapsedTransitionTime / TransitionTime, 0.f, 1.f);
 					const FVector NewLoc = FMath::Lerp(InspectActorOriginalLocation, InspectActorCloseUpLocation, Progress);
-					InspectActor->SetActorLocation(NewLoc);
+					InspectedActor->SetActorLocation(NewLoc);
 				}
 			}
 			break;
 		case EHappyInspectSystemState::Activated:
-			InspectActor->AddActorLocalRotation(RotationDelta);
+			InspectedActor->AddActorLocalRotation(RotationDelta);
+			InspectedActor->ExecutePreInspectActions(Camera->GetOwner());
 			RotationDelta = FRotator::ZeroRotator;
 			break;
 		case EHappyInspectSystemState::Deactivating:
-			if (InspectActor)
+			if (InspectedActor)
 			{
-				const FVector MoveLeft = InspectActor->GetActorLocation() - GetEndingLocation();
+				const FVector MoveLeft = InspectedActor->GetActorLocation() - GetEndingLocation();
 
 				// Finish transition
 				if (MoveLeft.IsNearlyZero())
 				{
-					InspectActor->SetActorTransform(InspectActorOriginalTransform);
-					for (UHappyAction* Action : InspectActor->GetPostInspectionActions())
-					{
-						if (Action)
-							Action->ExecuteAction(GetOwner(), nullptr);
-					}
-					if (InspectActor->IsTakeAfterUse())
-						InspectActor->Destroy();
-					InspectActor = nullptr;
+					InspectedActor->SetActorTransform(InspectActorOriginalTransform);
+					InspectedActor->ExecutePostInspectActions(Camera->GetOwner());
+					if (InspectedActor->IsTakeAfterInspection())
+						InspectedActor->Destroy();
+					InspectedActor = nullptr;
 					State = EHappyInspectSystemState::Deactivated;
 				}
 				// Progress transition
@@ -105,10 +108,10 @@ void UHappyInspectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActor
 					float Progress = FMath::Clamp(ElapsedTransitionTime / TransitionTime, 0.f, 1.f);
 					
 					const FVector NewLoc = FMath::Lerp(InspectActorCloseUpLocation, GetEndingLocation(), Progress);
-					InspectActor->SetActorLocation(NewLoc);
+					InspectedActor->SetActorLocation(NewLoc);
 					
 					const FRotator NewRot = FMath::Lerp(InspectActorChangedRotation, InspectActorOriginalRotation, Progress);
-					InspectActor->SetActorRotation(NewRot);
+					InspectedActor->SetActorRotation(NewRot);
 				}
 			}
 			break;
@@ -120,7 +123,7 @@ void UHappyInspectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActor
 
 FVector UHappyInspectSystem::GetEndingLocation() const
 {
-	if (InspectActor && InspectActor->IsTakeAfterUse())
+	if (InspectedActor && InspectedActor->IsTakeAfterInspection())
 		return InspectActorTakeLocation;
 	return InspectActorOriginalLocation;
 }

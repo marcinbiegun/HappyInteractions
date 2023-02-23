@@ -23,7 +23,7 @@ class HAPPYINTERACTIONS_API UHappyReactionComponent : public UActorComponent
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Reaction")
-	bool ExecuteReaction(AActor* ActivatorActor);
+	bool ExecuteReaction(AActor* ExecutorActor);
 	
 	UFUNCTION(BlueprintCallable)
 	void SetEnabled(bool bNewEnabled) { bEnabled = bNewEnabled; }
@@ -34,7 +34,7 @@ public:
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reaction")
-	bool bDisableAfterUse = false;
+	bool bDisableAfterUse = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reaction")
 	bool bEnabled = true;
@@ -46,6 +46,6 @@ protected:
 	TArray<UHappyAction*> Actions;
 
 	// Internal
-	bool DoExecuteReaction(bool bInActivatedByActor, const AActor* InActivator);
+	bool DoExecuteReaction(bool bExecutorActorExists, const AActor* ExecutorActor);
 };
 

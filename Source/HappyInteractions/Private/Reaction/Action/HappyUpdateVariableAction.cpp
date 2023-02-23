@@ -7,7 +7,7 @@
 
 void UHappyUpdateVariableAction::ExecuteAction_Implementation(const AActor* OwnerActor, const AActor* ExecutorActor)
 {
-	const FName GameVariableName = HappyUtils::GameplayTagToFName(Variable);
+	const FName GameVariableName = HappyUtils::GameplayTagToName(Variable);
 	if (GameVariableName.IsNone())
 		return;
 

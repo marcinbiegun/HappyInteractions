@@ -14,22 +14,22 @@ void UHappyFocusSystem::InitializeSystem(UCameraComponent* InCameraComponent)
 
 void UHappyFocusSystem::ActivateSystem(AHappyFocusActor* InFocusActor)
 {
-	FocusActor = InFocusActor;
+	FocusedActor = InFocusActor;
 	
-	OnBeforeSystemActivated.Broadcast(FocusActor);
+	OnBeforeSystemActivated.Broadcast(FocusedActor);
 	InFocusActor->ActivateFocus();
-	OnAfterSystemActivated.Broadcast(FocusActor);
+	OnAfterSystemActivated.Broadcast(FocusedActor);
 }
 
 void UHappyFocusSystem::DeactivateSystem()
 {
-	if (!FocusActor)
+	if (!FocusedActor)
 		return;
 
-	OnBeforeSystemDeactivated.Broadcast(FocusActor);
-	FocusActor->DeactivateFocus();
-	OnAfterSystemDeactivated.Broadcast(FocusActor);
-	FocusActor = nullptr;
+	OnBeforeSystemDeactivated.Broadcast(FocusedActor);
+	FocusedActor->DeactivateFocus();
+	OnAfterSystemDeactivated.Broadcast(FocusedActor);
+	FocusedActor = nullptr;
 }
 
 void UHappyFocusSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActorComponentTickFunction* ThisTickFunction)
@@ -40,24 +40,24 @@ void UHappyFocusSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActorCo
 
 void UHappyFocusSystem::AddControllerYawInput(float InValue)
 {
-	if (FocusActor)
+	if (FocusedActor)
 	{
-		FocusActor->OnFocusYawInput(InValue);
+		FocusedActor->OnFocusYawInput(InValue);
 	}
 }
 
 void UHappyFocusSystem::AddControllerPitchInput(float InValue)
 {
-	if (FocusActor)
+	if (FocusedActor)
 	{
-		FocusActor->OnFocusPitchInput(InValue);
+		FocusedActor->OnFocusPitchInput(InValue);
 	}
 }
 
 void UHappyFocusSystem::ControllerFireAction()
 {
-	if (FocusActor)
+	if (FocusedActor)
 	{
-		FocusActor->OnFocusClickInput();
+		FocusedActor->OnFocusClickInput();
 	}
 }

@@ -7,7 +7,6 @@ class HAPPYINTERACTIONS_API HappyUtils
 {
 public:
 
-	static FName GameplayTagToFName(FGameplayTag InGameplayTag);
-	static bool IsComponentParentedBy(const USceneComponent* InCheckedComponent, const USceneComponent* InParentComponent,
-							 const bool bInCheckWholeChain = true);
+	static FName GameplayTagToName(FGameplayTag InGameplayTag);
+
 };

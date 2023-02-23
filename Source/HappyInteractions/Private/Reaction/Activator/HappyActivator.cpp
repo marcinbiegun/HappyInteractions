@@ -6,8 +6,3 @@ void UHappyActivator::ExecuteActivator(AActor* ExecutorActor) const
 {
 	OnActivated.Broadcast(ExecutorActor);
 }
-
-// void UHappyActivator::ExecuteActivatorWithActor(AActor* InActivator) const
-// {
-// 	OnActivated.Broadcast(InActivator);
-// }

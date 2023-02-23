@@ -25,28 +25,38 @@ public:
 
 	AHappyInspectActor();
 	
-	void SetTargetIconHidden(bool bInHidden);
+	void SetSelectComponentHidden(bool bInHidden);
 
-	FText GetText() const { return Text; }
-	bool HasText() const { return !Text.IsEmpty(); }
-	bool IsTakeAfterUse() const { return bTakeAfterUse; }
-	TArray<UHappyAction*> GetPostInspectionActions() const { return PostInspectionActions; }
+	FText GetInspectText() const { return InspectText; }
+	bool HasInspectText() const { return !InspectText.IsEmpty(); }
+	bool IsTakeAfterInspection() const { return bTakeAfterInspection; }
+	bool ExecutePreInspectActions(AActor* ExecutorActor);
+	bool ExecutePostInspectActions(AActor* ExecutorActor);
 
 protected:
 	
 	UFUNCTION()
-	void OnUse(AActor* InExecutor);
+	void OnSelectComponentUsed(AActor* InExecutor);
 	
 	UPROPERTY(EditAnywhere)
-	bool bTakeAfterUse = false;
+	bool bTakeAfterInspection = false;
+	
+	UPROPERTY(EditAnywhere)
+	bool bRunActionsOnce = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Instanced)
-	TArray<UHappyAction*> PostInspectionActions;
+	TArray<UHappyAction*> PreInspectActions;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Instanced)
+	TArray<UHappyAction*> PostInspectActions;
 	
 	UPROPERTY(EditAnywhere)
-	FText Text = FText::GetEmpty();
+	FText InspectText = FText::GetEmpty();
 	
 	UPROPERTY(EditAnywhere)
 	UHappySelectComponent* SelectComponent = nullptr;
+
+	bool bPreActionsExecuted = false;
+	bool bPostActionsExecuted = false;
 };
 

@@ -41,7 +41,7 @@ public:
 	void ActivatedSystem(AHappyInspectActor* InInspectActor);
 	void DeactivateSystem();
 	void InitializeSystem(UCameraComponent* InCameraComponent);
-	bool IsSystemActivated() const { return InspectActor == nullptr; }
+	bool IsSystemActivated() const { return InspectedActor == nullptr; }
 
 	// Player input
 	void AddControllerYawInput(float InValue);
@@ -55,7 +55,7 @@ public:
 protected:
 
 	UPROPERTY()
-	AHappyInspectActor* InspectActor;
+	AHappyInspectActor* InspectedActor;
 	
 	UPROPERTY(EditAnywhere)
 	float DistanceFromCamera = 100.f;

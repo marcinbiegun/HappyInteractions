@@ -6,7 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "HappySelectComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHappyOnSelectUsed, AActor*, InExecutor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHappyOnSelectUsed, AActor*, ExecutorActor);
 
 /**
  * Component that can be selected as a interaction target
@@ -24,10 +24,10 @@ class HAPPYINTERACTIONS_API UHappySelectComponent : public UBoxComponent
 	
 public:
 
-	void Use(AActor* InExecutor);
+	void Use(AActor* InExecutorActor);
 	
 	UPROPERTY(BlueprintAssignable)
-	FHappyOnSelectUsed OnUse;
+	FHappyOnSelectUsed OnSelectUsed;
 
 	TArray<UStaticMeshComponent*> GetSelectableStaticMeshes() const;
 	
@@ -42,8 +42,8 @@ protected:
 	FName ActionName = FName(TEXT("Use"));
 
 	/**
-	 * Which static mesh components should highlight when the targetable is selected?
-	 * Empty list = highlight all static meshes in this actor.
+	 * Which static mesh components should highlight when this SelectComponent is selected.
+	 * Empty list = all static meshes wil be used
 	 */
 	UPROPERTY(EditAnywhere)
 	TArray<FName> SelectableComponentNames;

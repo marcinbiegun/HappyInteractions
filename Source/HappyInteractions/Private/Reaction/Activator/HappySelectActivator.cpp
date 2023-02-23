@@ -9,14 +9,14 @@ void UHappySelectActivator::Initialize(AActor* InOwner)
 
 	SelectComponent = Cast<UHappySelectComponent>(InOwner->GetDefaultSubobjectByName(SelectComponentName));
 	if (SelectComponent)
-		SelectComponent->OnUse.AddDynamic(this, &UHappySelectActivator::OnSelectComponentUsed);
+		SelectComponent->OnSelectUsed.AddDynamic(this, &UHappySelectActivator::OnSelectComponentUsed);
 }
 
 void UHappySelectActivator::Deinitialize(AActor* InOwner)
 {
 	if (SelectComponent)
 	{
-		SelectComponent->OnUse.RemoveDynamic(this, &UHappySelectActivator::OnSelectComponentUsed);
+		SelectComponent->OnSelectUsed.RemoveDynamic(this, &UHappySelectActivator::OnSelectComponentUsed);
 		SelectComponent = nullptr;
 	}
 	

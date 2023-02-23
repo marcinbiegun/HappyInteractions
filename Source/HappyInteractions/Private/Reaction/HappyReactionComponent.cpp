@@ -36,7 +36,7 @@ bool UHappyReactionComponent::ExecuteReaction(AActor* ExecutorActor)
 // 	DoExecuteReaction(bInActivatedByActor, InActivator);
 // }
 
-bool UHappyReactionComponent::DoExecuteReaction(bool bInActivatedByActor, const AActor* InActivator)
+bool UHappyReactionComponent::DoExecuteReaction(bool bExecutorActorExists, const AActor* ExecutorActor)
 {
 	if (!bEnabled)
 		return false;
@@ -66,12 +66,12 @@ bool UHappyReactionComponent::DoExecuteReaction(bool bInActivatedByActor, const 
 	{
 		if (Action)
 		{
-			Action->ExecuteAction(Owner, InActivator);
+			Action->ExecuteAction(Owner, ExecutorActor);
 		}
 	}
 
 	if (bDisableAfterUse)
-		bEnabled = true;
+		bEnabled = false;
 
 	return true;
 }

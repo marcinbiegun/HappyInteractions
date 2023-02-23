@@ -2,7 +2,7 @@
 
 #include "Utils/HappyUtils.h"
 
-FName HappyUtils::GameplayTagToFName(FGameplayTag InGameplayTag)
+FName HappyUtils::GameplayTagToName(FGameplayTag InGameplayTag)
 {
 	if (!InGameplayTag.IsValid())
 		return FName();
@@ -12,28 +12,4 @@ FName HappyUtils::GameplayTagToFName(FGameplayTag InGameplayTag)
 		return FName();
 
 	return FName(VariableString);
-}
-
-bool HappyUtils::IsComponentParentedBy(const USceneComponent* InCheckedComponent, const USceneComponent* InParentComponent, const bool bInCheckWholeChain /*= true */)
-{
-	if (!InCheckedComponent || !InParentComponent)
-		return false;
-
-	if (InCheckedComponent == InParentComponent)
-		return false;
-
-	if (bInCheckWholeChain)
-	{
-		TArray<USceneComponent*> ParentComponents;
-		InCheckedComponent->GetParentComponents(ParentComponents);
-		for (const USceneComponent* ParentComponent : ParentComponents) {
-			if (ParentComponent == InParentComponent)
-				return true;
-		}
-	} else
-	{
-		return InCheckedComponent->GetAttachParent() == InParentComponent;
-	}
-	
-	return false;
 }

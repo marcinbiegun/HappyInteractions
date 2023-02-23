@@ -28,7 +28,7 @@ protected:
 	UHappySelectComponent* SelectComponent = nullptr;
 	
 	UFUNCTION(BlueprintNativeEvent)
-	void OnUse(AActor* Executor);
+	void OnSelectActorUsed(AActor* Executor);
 
 };
 

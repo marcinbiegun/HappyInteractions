@@ -4,45 +4,43 @@
 
 UHappySelectComponent::UHappySelectComponent()
 {
-	BoxExtent = FVector(10.f, 10.f, 10.f);
+	BoxExtent = FVector(5.f, 5.f, 5.f);
+	ShapeColor = FColor::Green;
 }
 
 void UHappySelectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Find and store a static mesh component
-	
-	// A: Connect all static meshes
-	if (SelectableComponentNames.IsEmpty())
+	// Find and store a static mesh components to highlight
+	TArray<UStaticMeshComponent*> StaticMeshComponents;
+	GetOwner()->GetComponents<UStaticMeshComponent>(StaticMeshComponents);
+	for (UStaticMeshComponent* StaticMeshComponent : StaticMeshComponents)
 	{
-		TArray<UStaticMeshComponent*> StaticMeshComponents;
-		GetOwner()->GetComponents<UStaticMeshComponent>(StaticMeshComponents);
-		for (UStaticMeshComponent* StaticMeshComponent : StaticMeshComponents)
+		// Use if there is no component names provided (then use all), or if component name matches provided names
+		if (SelectableComponentNames.IsEmpty() || SelectableComponentNames.Contains(FName(StaticMeshComponent->GetName())))
 		{
-			if (StaticMeshComponent)
-				SelectableComponents.Add(StaticMeshComponent);
+			SelectableComponents.Add(StaticMeshComponent);
 		}
-	}
-	// B: Connect only selected static meshes
-	else
-	{
-		if (AActor* Owner = GetOwner())
+		
+		// Nanite check - stencil outline will does not work currently with Nanite :( as in 5.1
+		TObjectPtr<UStaticMesh> StaticMeshPtr = StaticMeshComponent->GetStaticMesh();
+		if (const UStaticMesh* StaticMesh = StaticMeshPtr.Get())
 		{
-			for (const FName& StaticMeshComponentName : SelectableComponentNames)
+			if (StaticMesh->NaniteSettings.bEnabled)
 			{
-				if (UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(Owner->GetDefaultSubobjectByName(StaticMeshComponentName)))
-				{
-					SelectableComponents.Add(StaticMeshComponent);
-				}
+				// TODO: LogTemp
+				UE_LOG(LogTemp, Error, TEXT("Desired selectable static mesh component of name %s will not highlight, because it has nanite enabled"), *StaticMeshComponent->GetName());
 			}
 		}
 	}
-
-	// Enable CustomDepth pass for post-process to be able to display the selection outline
-	for (UStaticMeshComponent* StaticMeshComponent : SelectableComponents)
-		StaticMeshComponent->SetRenderCustomDepth(true);
 	
+	// Ensure CustomDepth render is enabled
+	for (UStaticMeshComponent* StaticMeshComponent : SelectableComponents)
+	{
+		StaticMeshComponent->SetRenderCustomDepth(true);
+	}
+		
 	if (SelectableComponents.IsEmpty())
 	{
 		// TODO: LogTemp
@@ -50,9 +48,9 @@ void UHappySelectComponent::BeginPlay()
 	}
 }
 
-void UHappySelectComponent::Use(AActor* InExecutor)
+void UHappySelectComponent::Use(AActor* InExecutorActor)
 {
-	OnUse.Broadcast(InExecutor);
+	OnSelectUsed.Broadcast(InExecutorActor);
 }
 
 TArray<UStaticMeshComponent*> UHappySelectComponent::GetSelectableStaticMeshes() const
