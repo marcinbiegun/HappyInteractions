@@ -24,7 +24,8 @@ class HAPPYINTERACTIONS_API UHappySelectComponent : public UBoxComponent
 	
 public:
 
-	void Use(AActor* InExecutorActor);
+	UFUNCTION(BlueprintCallable)
+	void UseSelect(AActor* InExecutorActor);
 	
 	UPROPERTY(BlueprintAssignable)
 	FHappyOnSelectUsed OnSelectUsed;

@@ -12,7 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHappyOnFocusSystemChange, AHappyFoc
 /**
  * This should be placed on a character actor, it is responsible for handling inspection mechanic (looking at actors at close).
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, ClassGroup="HappyInteractions", meta=(DisplayName = "HappyFocusSystem", BlueprintSpawnableComponent))
 class HAPPYINTERACTIONS_API UHappyFocusSystem : public UActorComponent
 {
 	GENERATED_BODY()
@@ -20,25 +20,36 @@ class HAPPYINTERACTIONS_API UHappyFocusSystem : public UActorComponent
 	UHappyFocusSystem();
 
 public:
+
+	virtual void BeginPlay() override;;
 	
+	UPROPERTY(BlueprintAssignable)
 	FHappyOnFocusSystemChange OnBeforeSystemActivated;
+	UPROPERTY(BlueprintAssignable)
 	FHappyOnFocusSystemChange OnAfterSystemActivated;
 	
+	UPROPERTY(BlueprintAssignable)
 	FHappyOnFocusSystemChange OnBeforeSystemDeactivated;
+	UPROPERTY(BlueprintAssignable)
 	FHappyOnFocusSystemChange OnAfterSystemDeactivated;
 	
 	// System state
-	void InitializeSystem(UCameraComponent* InCameraComponent);
+	UFUNCTION(BlueprintCallable)
 	void ActivateSystem(AHappyFocusActor* InFocusActor);
+	UFUNCTION(BlueprintCallable)
 	void DeactivateSystem();
+	UFUNCTION(BlueprintCallable)
 	bool IsSystemActivated() const { return FocusedActor == nullptr; }
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	// Pass player input
+	UFUNCTION(BlueprintCallable)
 	void AddControllerYawInput(float InValue);
+	UFUNCTION(BlueprintCallable)
 	void AddControllerPitchInput(float InValue);
+	UFUNCTION(BlueprintCallable)
 	void ControllerFireAction();
+	
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY()
 	UCameraComponent* Camera = nullptr;

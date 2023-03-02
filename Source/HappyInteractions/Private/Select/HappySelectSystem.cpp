@@ -16,7 +16,13 @@ UHappySelectSystem::UHappySelectSystem()
 void UHappySelectSystem::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	InteractionRangeSquared = FMath::Pow(InteractionRange, 2);
+	
+	if (const AActor* Owner = GetOwner())
+	{
+		CameraComponent = Cast<UCameraComponent>(Owner->GetComponentByClass(UCameraComponent::StaticClass()));
+	}
 }
 
 void UHappySelectSystem::TraceOverlappingComponents(TSet<UPrimitiveComponent*>& OutOverlappingComponents)
@@ -48,6 +54,12 @@ void UHappySelectSystem::TraceOverlappingComponents(TSet<UPrimitiveComponent*>& 
 void UHappySelectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, Tick, ThisTickFunction);
+	
+	if (!CameraComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("HappySelectSystem: NO CAMERA"));
+		return;
+	}
 
 	// Find targetable components in range
 	TSet<UPrimitiveComponent*> ComponentsInRange;
@@ -164,23 +176,18 @@ void UHappySelectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActorC
 	SelectComponents = NewTargetableComponents;
 }
 
-bool UHappySelectSystem::Use()
+bool UHappySelectSystem::UseCurrentSelectComponent()
 {
 	if (CurrentSelectComponent)
 	{
 		// TODO: try to remove dependency
 		if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
 		{
-			CurrentSelectComponent->Use(OwnerPawn);
+			CurrentSelectComponent->UseSelect(OwnerPawn);
 			return true;
 		}
 	}
 	return false;
-}
-
-void UHappySelectSystem::InitializeSystem(UCameraComponent* InCameraComponent)
-{
-	CameraComponent = InCameraComponent;
 }
 
 void UHappySelectSystem::ActivateSystem()

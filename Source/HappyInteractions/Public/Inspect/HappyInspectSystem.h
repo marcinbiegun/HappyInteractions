@@ -20,39 +20,49 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHappyOnInspectSystemChange, AHappyI
 /**
  * This should be placed on a character actor, it is responsible for handling inspection mechanic (looking at actors at close).
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, ClassGroup="HappyInteractions", meta=(DisplayName = "HappyInspectSystem", BlueprintSpawnableComponent))
 class HAPPYINTERACTIONS_API UHappyInspectSystem : public UActorComponent
 {
 	GENERATED_BODY()
 
 	UHappyInspectSystem();
 
+	virtual void BeginPlay() override;
+	
 public:
-	
-	FHappyOnInspectSystemChange OnBeforeSystemActivated;
-	FHappyOnInspectSystemChange OnAfterSystemActivated;
-	
-	FHappyOnInspectSystemChange OnBeforeSystemDeactivated;
-	FHappyOnInspectSystemChange OnAfterSystemDeactivated;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(BlueprintAssignable)
+	FHappyOnInspectSystemChange OnBeforeSystemActivated;
+	UPROPERTY(BlueprintAssignable)
+	FHappyOnInspectSystemChange OnAfterSystemActivated;
+	
+	UPROPERTY(BlueprintAssignable)
+	FHappyOnInspectSystemChange OnBeforeSystemDeactivated;
+	UPROPERTY(BlueprintAssignable)
+	FHappyOnInspectSystemChange OnAfterSystemDeactivated;
+
 	// System state
-	void ActivatedSystem(AHappyInspectActor* InInspectActor);
+	UFUNCTION(BlueprintCallable)
+	void ActivateSystem(AHappyInspectActor* InInspectActor);
+	UFUNCTION(BlueprintCallable)
 	void DeactivateSystem();
-	void InitializeSystem(UCameraComponent* InCameraComponent);
+	UFUNCTION(BlueprintCallable)
 	bool IsSystemActivated() const { return InspectedActor == nullptr; }
 
 	// Player input
+	UFUNCTION(BlueprintCallable)
 	void AddControllerYawInput(float InValue);
+	UFUNCTION(BlueprintCallable)
 	void AddControllerPitchInput(float InValue);
 
 	float GetDistanceFromCamera() const { return DistanceFromCamera; }
 	
+protected:
+	
 	UPROPERTY()
 	UCameraComponent* Camera = nullptr;
-
-protected:
 
 	UPROPERTY()
 	AHappyInspectActor* InspectedActor;

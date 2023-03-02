@@ -7,9 +7,14 @@ UHappyFocusSystem::UHappyFocusSystem()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UHappyFocusSystem::InitializeSystem(UCameraComponent* InCameraComponent)
+void UHappyFocusSystem::BeginPlay()
 {
-	Camera = InCameraComponent;
+	Super::BeginPlay();
+
+	if (const AActor* Owner = GetOwner())
+	{
+		Camera = Cast<UCameraComponent>(Owner->GetComponentByClass(UCameraComponent::StaticClass()));
+	}
 }
 
 void UHappyFocusSystem::ActivateSystem(AHappyFocusActor* InFocusActor)

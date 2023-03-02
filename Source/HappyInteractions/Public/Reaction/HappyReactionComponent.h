@@ -34,7 +34,7 @@ public:
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reaction")
-	bool bDisableAfterUse = true;
+	bool bDisableAfterUse = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reaction")
 	bool bEnabled = true;

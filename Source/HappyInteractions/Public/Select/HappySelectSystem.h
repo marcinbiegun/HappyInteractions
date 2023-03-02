@@ -24,37 +24,40 @@ struct FHappySelectable {
  *
  * The targetable components will be visible if they are inside the main sphere component.
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, ClassGroup="HappyInteractions", meta=(DisplayName = "HappySelectSystem", BlueprintSpawnableComponent))
 class HAPPYINTERACTIONS_API UHappySelectSystem : public UActorComponent
 {
 	GENERATED_BODY()
+	
+	virtual void BeginPlay() override;
 
 public:
 
 	UHappySelectSystem();
+	
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	FHappyOnSelectActionNameChanged OnActionNameChanged;
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION(BlueprintCallable)
+	bool UseCurrentSelectComponent();
 	
-	bool Use();
+	UFUNCTION(BlueprintCallable)
+	UHappySelectComponent* GetCurrentSelectComponent() { return CurrentSelectComponent; }
 	
-	// System state
-	void InitializeSystem(UCameraComponent* InCameraComponent);
-
 	UFUNCTION(BlueprintCallable)
 	void ActivateSystem();
+	
+	UFUNCTION(BlueprintCallable)
 	void DeactivateSystem();
 
 protected:
-
-	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category="Select System")
 	float VisibilityRange = 500.f;
 	
 	UPROPERTY(EditAnywhere, Category="Select System")
-	float InteractionRange = 200.f;
+	float InteractionRange = 250.f;
 	float InteractionRangeSquared = -1.f;
 	
 	UPROPERTY(EditAnywhere, Category="Select System")

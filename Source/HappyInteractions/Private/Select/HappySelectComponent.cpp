@@ -48,7 +48,7 @@ void UHappySelectComponent::BeginPlay()
 	}
 }
 
-void UHappySelectComponent::Use(AActor* InExecutorActor)
+void UHappySelectComponent::UseSelect(AActor* InExecutorActor)
 {
 	OnSelectUsed.Broadcast(InExecutorActor);
 }

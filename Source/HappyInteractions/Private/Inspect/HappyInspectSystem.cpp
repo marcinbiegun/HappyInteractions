@@ -1,19 +1,23 @@
 ﻿// Copyright SpaceCatLabs. All Rights Reserved.
 
 #include "Inspect/HappyInspectSystem.h"
-#include "Reaction/Action/HappyAction.h"
 
 UHappyInspectSystem::UHappyInspectSystem()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UHappyInspectSystem::InitializeSystem(UCameraComponent* InCameraComponent)
+void UHappyInspectSystem::BeginPlay()
 {
-	Camera = InCameraComponent;
+	Super::BeginPlay();
+
+	if (const AActor* Owner = GetOwner())
+	{
+		Camera = Cast<UCameraComponent>(Owner->GetComponentByClass(UCameraComponent::StaticClass()));
+	}
 }
 
-void UHappyInspectSystem::ActivatedSystem(AHappyInspectActor* InInspectActor)
+void UHappyInspectSystem::ActivateSystem(AHappyInspectActor* InInspectActor)
 {
 	if (!InInspectActor)
 		return;

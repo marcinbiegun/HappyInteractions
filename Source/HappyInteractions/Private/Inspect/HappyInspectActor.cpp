@@ -62,7 +62,7 @@ void AHappyInspectActor::OnSelectComponentUsed(AActor* InExecutor)
 		InExecutor->GetComponentByClass(UHappyInspectSystem::StaticClass())
 	))
 	{
-		InspectionSystem->ActivatedSystem(this);
+		InspectionSystem->ActivateSystem(this);
 	}
 	// if (AHAdventureFirstPersonCharacter* FirstPersonCharacter = Cast<AHAdventureFirstPersonCharacter>(InExecutor))
 	// {
