@@ -4,8 +4,9 @@
 
 #include "Camera/CameraComponent.h"
 #include "Select/HappySelectComponent.h"
+#include "Utils/HappyGlobals.h"
 
-DEFINE_LOG_CATEGORY(LogHappySelectSystem);
+DEFINE_LOG_CATEGORY(LogHappyInteractionsSelect)
 
 UHappySelectSystem::UHappySelectSystem()
 {
@@ -57,7 +58,7 @@ void UHappySelectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActorC
 	
 	if (!CameraComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("HappySelectSystem: NO CAMERA"));
+		UE_LOG(LogHappyInteractionsSelect, Error, TEXT("%s: Aborting, Camera is nullptr"), *FString(__FUNCTION__));
 		return;
 	}
 
@@ -180,10 +181,9 @@ bool UHappySelectSystem::UseCurrentSelectComponent()
 {
 	if (CurrentSelectComponent)
 	{
-		// TODO: try to remove dependency
-		if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
+		if (AActor* Owner = GetOwner())
 		{
-			CurrentSelectComponent->UseSelect(OwnerPawn);
+			CurrentSelectComponent->UseSelect(Owner);
 			return true;
 		}
 	}

@@ -1,6 +1,7 @@
 ﻿// Copyright SpaceCatLabs. All Rights Reserved.
 
 #include "Utils/HappyUtils.h"
+#include "Variable/HappyVariableSubsystem.h"
 
 FName HappyUtils::GameplayTagToName(FGameplayTag InGameplayTag)
 {
@@ -12,4 +13,17 @@ FName HappyUtils::GameplayTagToName(FGameplayTag InGameplayTag)
 		return FName();
 
 	return FName(VariableString);
+}
+
+UHappyVariableSubsystem* HappyUtils::GetVariableSubsystem(UObject* WorldContextObject)
+{
+	if (const UWorld* World = WorldContextObject->GetWorld())
+	{
+		if (const UGameInstance* GameInstance = World->GetGameInstance())
+		{
+			return GameInstance->GetSubsystem<UHappyVariableSubsystem>();
+		}
+	}
+	
+	return nullptr;
 }

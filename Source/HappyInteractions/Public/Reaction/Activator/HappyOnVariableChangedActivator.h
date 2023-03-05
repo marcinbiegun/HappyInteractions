@@ -17,8 +17,8 @@ class HAPPYINTERACTIONS_API UHappyOnVariableChangedActivator : public UHappyActi
 
 public:
 
-	virtual void Initialize(AActor* InOwner) override;
-	virtual void Deinitialize(AActor* InOwner) override;
+	virtual void InitializeActivator(AActor* InOwner) override;
+	virtual void DeinitializeActivator(AActor* InOwner) override;
 
 protected:
 	

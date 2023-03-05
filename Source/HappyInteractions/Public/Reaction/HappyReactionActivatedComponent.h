@@ -5,7 +5,7 @@
 #include "HappyReactionComponent.h"
 #include "HappyReactionActivatedComponent.generated.h"
 
-UCLASS(BlueprintType, Blueprintable, ClassGroup="HappyInteractions", meta=(DisplayName = "Reaction with Activators Component", BlueprintSpawnableComponent))
+UCLASS(BlueprintType, Blueprintable, ClassGroup="HappyInteractions", meta=(DisplayName = "Activated Reaction", BlueprintSpawnableComponent))
 class UHappyReactionActivatedComponent : public UHappyReactionComponent
 {
 	GENERATED_BODY()

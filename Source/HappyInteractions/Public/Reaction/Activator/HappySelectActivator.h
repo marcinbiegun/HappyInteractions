@@ -18,8 +18,8 @@ class HAPPYINTERACTIONS_API UHappySelectActivator : public UHappyActivator
 
 public:
 
-	virtual void Initialize(AActor* InOwner) override;
-	virtual void Deinitialize(AActor* InOwner) override;
+	virtual void InitializeActivator(AActor* InOwner) override;
+	virtual void DeinitializeActivator(AActor* InOwner) override;
 	
 	/** The name of a HappySelectComponent on owning actor, that will be connected to this activator */
 	UPROPERTY(EditAnywhere)

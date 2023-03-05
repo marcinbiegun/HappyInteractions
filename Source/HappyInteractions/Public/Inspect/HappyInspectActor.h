@@ -16,16 +16,12 @@ class HAPPYINTERACTIONS_API AHappyInspectActor : public AActor
 {
 	GENERATED_BODY()
 	
-protected:
-	
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 public:
 
 	AHappyInspectActor();
 	
-	void SetSelectComponentHidden(bool bInHidden);
+	void ActivateInspect();
+	void DeactivateInspect();
 
 	FText GetInspectText() const { return InspectText; }
 	bool HasInspectText() const { return !InspectText.IsEmpty(); }
@@ -35,14 +31,25 @@ public:
 
 protected:
 	
-	UFUNCTION()
-	void OnSelectComponentUsed(AActor* InExecutor);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnInspectActivated();
+	void OnInspectActivated_Implementation();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnInspectDeactivated();
+	void OnInspectDeactivated_Implementation();
 	
 	UPROPERTY(EditAnywhere)
 	bool bTakeAfterInspection = false;
 	
 	UPROPERTY(EditAnywhere)
-	bool bRunActionsOnce = true;
+	bool bRunPreActionsOnce = true;
+	
+	UPROPERTY(EditAnywhere)
+	bool bRunPostActionsOnce = true;
+	
+	UPROPERTY(EditAnywhere)
+	USceneComponent* SceneRootComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Instanced)
 	TArray<UHappyAction*> PreInspectActions;
@@ -58,5 +65,6 @@ protected:
 
 	bool bPreActionsExecuted = false;
 	bool bPostActionsExecuted = false;
+	
 };
 

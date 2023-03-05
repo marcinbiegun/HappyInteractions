@@ -4,5 +4,5 @@
 
 void UHappyActivator::ExecuteActivator(AActor* ExecutorActor) const
 {
-	OnActivated.Broadcast(ExecutorActor);
+	OnExecuted.Broadcast(ExecutorActor);
 }

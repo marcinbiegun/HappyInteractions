@@ -11,26 +11,23 @@ bool UHappyVariableCondition::IsConditionPassing_Implementation()
 	if (VariableName.IsNone())
 		return false;
 
-	if (const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(this))
+	if (UHappyVariableSubsystem* VariableSubsystem = HappyUtils::GetVariableSubsystem(this))
 	{
-		if (UHappyVariableSubsystem* VariableSubsystem = GameInstance->GetSubsystem<UHappyVariableSubsystem>())
+		const int32 SubsystemValue = VariableSubsystem->Get(VariableName);
+		switch (Check)
 		{
-			const int32 SubsystemValue = VariableSubsystem->Get(VariableName);
-			switch (Check)
-			{
-				case EHappyVariableCheck::IsTrue:
-					return SubsystemValue != 0;
-				case EHappyVariableCheck::IsFalse:
-					return SubsystemValue == 0;
-				case EHappyVariableCheck::IsGreater:
-					return SubsystemValue > Value;
-				case EHappyVariableCheck::IsGreaterOrEqual:
-					return SubsystemValue >= Value;
-				case EHappyVariableCheck::IsLess:
-					return SubsystemValue < Value;
-				case EHappyVariableCheck::IsLessOrEqual:
-					return SubsystemValue <= Value;
-			}
+			case EHappyVariableCheck::IsTrue:
+				return SubsystemValue != 0;
+			case EHappyVariableCheck::IsFalse:
+				return SubsystemValue == 0;
+			case EHappyVariableCheck::IsGreater:
+				return SubsystemValue > Value;
+			case EHappyVariableCheck::IsGreaterOrEqual:
+				return SubsystemValue >= Value;
+			case EHappyVariableCheck::IsLess:
+				return SubsystemValue < Value;
+			case EHappyVariableCheck::IsLessOrEqual:
+				return SubsystemValue <= Value;
 		}
 	}
 			

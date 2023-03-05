@@ -3,9 +3,9 @@
 #include "Reaction/Activator/HappyOverlapActivator.h"
 #include "GameFramework/Character.h"
 
-void UHappyOverlapActivator::Initialize(AActor* InOwner)
+void UHappyOverlapActivator::InitializeActivator(AActor* InOwner)
 {
-	Super::Initialize(InOwner);
+	Super::InitializeActivator(InOwner);
 
 	OverlapComponent = Cast<UPrimitiveComponent>(InOwner->GetDefaultSubobjectByName(OverlapComponentName));
 	if (OverlapComponent)
@@ -14,9 +14,9 @@ void UHappyOverlapActivator::Initialize(AActor* InOwner)
 	}
 }
 
-void UHappyOverlapActivator::Deinitialize(AActor* InOwner)
+void UHappyOverlapActivator::DeinitializeActivator(AActor* InOwner)
 {
-	Super::Deinitialize(InOwner);
+	Super::DeinitializeActivator(InOwner);
 	
 	if (OverlapComponent)
 	{
@@ -27,38 +27,8 @@ void UHappyOverlapActivator::Deinitialize(AActor* InOwner)
 void UHappyOverlapActivator::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	bool bActorFilterPassed = false;
-	switch (ActorFilter)
-	{
-	case EHappySubclassFilter::AnyActor:
-		bActorFilterPassed = true;
-		break;
-	case EHappySubclassFilter::PawnOnly:
-		if (APawn* Pawn = Cast<APawn>(Other))
-		{
-			bActorFilterPassed = true;
-		}
-		break;
-	case EHappySubclassFilter::CharacterOnly:
-		if (ACharacter* Character = Cast<ACharacter>(Other))
-		{
-			bActorFilterPassed = true;
-		}
-	}
-
-	if (bActorFilterPassed)
+	if (Other->GetClass()->IsChildOf(ActorClassFilter))
 	{
 		ExecuteActivator(Other);
 	}
-
-	// // TODO FIX ME: allow to set class dynamically in blueprints
-	//	
-	// TSubclassOf<AActor>::TClassType* SubclassOf = OnlySubclassOf.Get();
-	//
-	// auto Dupa = Cast<OnlySubclassOf->ClassWithin->StaticClass()>(Other);
-	// auto Dupa = Cast<OnlySubclassOf->StaticClass()>(Other);
-	// auto Dupa = Cast<OnlySubclassOf.Get()>(Other);
-	// auto Dupa = Cast<OnlySubclassOf>(Other);
-	//
-	// OnlySubclassOf->StaticClass().cast
 }

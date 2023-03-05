@@ -6,37 +6,31 @@
 #include "Kismet/GameplayStatics.h"
 #include "Utils/HappyUtils.h"
 
-void UHappyOnVariableChangedActivator::Initialize(AActor* InOwner)
+void UHappyOnVariableChangedActivator::InitializeActivator(AActor* InOwner)
 {
-	Super::Initialize(InOwner);
+	Super::InitializeActivator(InOwner);
 
 	const FName GameVariableName = HappyUtils::GameplayTagToName(GameVariable);
 	if (GameVariableName.IsNone())
 		return;
 	
-	if (const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(this))
+	if (UHappyVariableSubsystem* VariablesSubsystem = HappyUtils::GetVariableSubsystem(this))
 	{
-		if (UHappyVariableSubsystem* VariablesSubsystem = GameInstance->GetSubsystem<UHappyVariableSubsystem>())
-		{
-			VariablesSubsystem->GetOnUpdateDelegate(GameVariableName).AddDynamic(this, &UHappyOnVariableChangedActivator::OnGameVariableUpdate);
-		}
+		VariablesSubsystem->GetOnUpdateDelegate(GameVariableName).AddDynamic(this, &UHappyOnVariableChangedActivator::OnGameVariableUpdate);
 	}
 }
 
-void UHappyOnVariableChangedActivator::Deinitialize(AActor* InOwner)
+void UHappyOnVariableChangedActivator::DeinitializeActivator(AActor* InOwner)
 {
-	Super::Deinitialize(InOwner);
+	Super::DeinitializeActivator(InOwner);
 
 	const FName GameVariableName = HappyUtils::GameplayTagToName(GameVariable);
 	if (GameVariableName.IsNone())
 		return;
 	
-	if (const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(this))
+	if (UHappyVariableSubsystem* VariablesSubsystem = HappyUtils::GetVariableSubsystem(this))
 	{
-		if (UHappyVariableSubsystem* VariablesSubsystem = GameInstance->GetSubsystem<UHappyVariableSubsystem>())
-		{
-			VariablesSubsystem->GetOnUpdateDelegate(GameVariableName).RemoveDynamic(this, &UHappyOnVariableChangedActivator::OnGameVariableUpdate);
-		}
+		VariablesSubsystem->GetOnUpdateDelegate(GameVariableName).RemoveDynamic(this, &UHappyOnVariableChangedActivator::OnGameVariableUpdate);
 	}
 }
 

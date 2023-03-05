@@ -4,26 +4,22 @@
 #include "CoreMinimal.h"
 #include "HappyActivator.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHappyTriggerActivatorActivated, AActor*, ExecutorActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHappyReactionActivatorActivated, AActor*, ExecutorActor);
 
 UCLASS(Abstract, Blueprintable, EditInlineNew, CollapseCategories)
 class HAPPYINTERACTIONS_API UHappyActivator : public UObject
 {
 	GENERATED_BODY()
-	
 
 public:
 
-	FHappyTriggerActivatorActivated OnActivated;
+	FHappyReactionActivatorActivated OnExecuted;
 
-	virtual void Initialize(AActor* InOwner) {}
-	virtual void Deinitialize(AActor* InOwner) {}
+	virtual void InitializeActivator(AActor* InOwner) {}
+	virtual void DeinitializeActivator(AActor* InOwner) {}
 
 protected:
 
-	// UFUNCTION(BlueprintCallable)
-	// void ExecuteActivator() const;
-	
 	UFUNCTION(BlueprintCallable)
 	void ExecuteActivator(AActor* ExecutorActor) const;
 };

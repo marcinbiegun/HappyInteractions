@@ -42,11 +42,6 @@ public:
 	void OnFocusClickInput_Implementation() {}
 
 protected:
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	
-	UFUNCTION()
-	void OnSelectComponentUsed(AActor* InExecutor);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCameraComponent* FocusCameraComponent;

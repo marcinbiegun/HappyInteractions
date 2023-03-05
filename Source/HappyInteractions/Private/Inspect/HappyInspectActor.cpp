@@ -7,27 +7,16 @@
 
 AHappyInspectActor::AHappyInspectActor()
 {
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SceneRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("InspectRoot"));
+	SceneRootComponent->SetupAttachment(RootComponent);
 
-	SelectComponent = CreateDefaultSubobject<UHappySelectComponent>(TEXT("HappyTargetableComponent"));
-	SelectComponent->SetupAttachment(RootComponent);
-}
-
-void AHappyInspectActor::BeginPlay()
-{
-	Super::BeginPlay();
-	SelectComponent->OnSelectUsed.AddDynamic(this, &AHappyInspectActor::OnSelectComponentUsed);
-}
-
-void AHappyInspectActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	SelectComponent->OnSelectUsed.RemoveAll(this);
-	Super::EndPlay(EndPlayReason);
+	SelectComponent = CreateDefaultSubobject<UHappySelectComponent>(TEXT("Select"));
+	SelectComponent->SetupAttachment(SceneRootComponent);
 }
 
 bool AHappyInspectActor::ExecutePreInspectActions(AActor* ExecutorActor)
 {
-	if (bRunActionsOnce && bPreActionsExecuted)
+	if (bRunPreActionsOnce && bPreActionsExecuted)
 		return false;
 
 	for (UHappyAction* Action : PreInspectActions)
@@ -42,7 +31,7 @@ bool AHappyInspectActor::ExecutePreInspectActions(AActor* ExecutorActor)
 
 bool AHappyInspectActor::ExecutePostInspectActions(AActor* ExecutorActor)
 {
-	if (bRunActionsOnce && bPostActionsExecuted)
+	if (bRunPostActionsOnce && bPostActionsExecuted)
 		return false;
 	
 	for (UHappyAction* Action : PostInspectActions)
@@ -55,21 +44,12 @@ bool AHappyInspectActor::ExecutePostInspectActions(AActor* ExecutorActor)
 	return true;
 }
 
-void AHappyInspectActor::OnSelectComponentUsed(AActor* InExecutor)
+void AHappyInspectActor::ActivateInspect()
 {
-	// TODO: remove this dependency?
-	if (UHappyInspectSystem* InspectionSystem = Cast<UHappyInspectSystem>(
-		InExecutor->GetComponentByClass(UHappyInspectSystem::StaticClass())
-	))
-	{
-		InspectionSystem->ActivateSystem(this);
-	}
-	// if (AHAdventureFirstPersonCharacter* FirstPersonCharacter = Cast<AHAdventureFirstPersonCharacter>(InExecutor))
-	// {
-	// 	FirstPersonCharacter->StartInspection(this);
-	// }
+	OnInspectActivated();
 }
 
-void AHappyInspectActor::SetSelectComponentHidden(bool bInHidden)
+void AHappyInspectActor::DeactivateInspect()
 {
+	OnInspectDeactivated();
 }

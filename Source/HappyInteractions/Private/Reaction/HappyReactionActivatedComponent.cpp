@@ -12,8 +12,8 @@ void UHappyReactionActivatedComponent::BeginPlay()
 		{
 			if (Activator)
 			{
-				Activator->Initialize(Owner);
-				Activator->OnActivated.AddDynamic(this, &UHappyReactionActivatedComponent::ReceiveActivation);
+				Activator->InitializeActivator(Owner);
+				Activator->OnExecuted.AddDynamic(this, &UHappyReactionActivatedComponent::ReceiveActivation);
 			}
 		}
 	}
@@ -27,8 +27,8 @@ void UHappyReactionActivatedComponent::EndPlay(const EEndPlayReason::Type EndPla
 		{
 			if (Activator)
 			{
-				Activator->OnActivated.RemoveDynamic(this, &UHappyReactionActivatedComponent::ReceiveActivation);
-				Activator->Deinitialize(Owner);
+				Activator->OnExecuted.RemoveDynamic(this, &UHappyReactionActivatedComponent::ReceiveActivation);
+				Activator->DeinitializeActivator(Owner);
 			}
 		}
 	}

@@ -7,8 +7,6 @@
 class UCameraComponent;
 class UHappySelectComponent;
 
-DECLARE_LOG_CATEGORY_EXTERN(LogHappySelectSystem, Log, All);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHappyOnSelectActionNameChanged, FName, InActionName);
 
 struct FHappySelectable {

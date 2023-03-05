@@ -1,6 +1,9 @@
 ﻿// Copyright SpaceCatLabs. All Rights Reserved.
 
 #include "Inspect/HappyInspectSystem.h"
+#include "Utils/HappyGlobals.h"
+
+DEFINE_LOG_CATEGORY(LogHappyInteractionsInspect);
 
 UHappyInspectSystem::UHappyInspectSystem()
 {
@@ -15,6 +18,11 @@ void UHappyInspectSystem::BeginPlay()
 	{
 		Camera = Cast<UCameraComponent>(Owner->GetComponentByClass(UCameraComponent::StaticClass()));
 	}
+
+	if (!Camera)
+	{
+		UE_LOG(LogHappyInteractionsInspect, Error, TEXT("%s: Failed to get UCameraComponent from owner actor"), *FString(__FUNCTION__));
+	}
 }
 
 void UHappyInspectSystem::ActivateSystem(AHappyInspectActor* InInspectActor)
@@ -24,12 +32,11 @@ void UHappyInspectSystem::ActivateSystem(AHappyInspectActor* InInspectActor)
 
 	if (!Camera)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Cannot start InspectionSystem: camera is nullptr!"));
+		UE_LOG(LogHappyInteractionsInspect, Error, TEXT("%s: Aborting, Camera is nullptr"), *FString(__FUNCTION__));
 		return;
 	}
 
 	OnBeforeSystemActivated.Broadcast(InInspectActor);
-	UE_LOG(LogTemp, Log, TEXT("Inspection started"));
 	
 	InspectedActor = InInspectActor;
 	ActivatedAt = GetOwner()->GetGameTimeSinceCreation();
@@ -39,8 +46,8 @@ void UHappyInspectSystem::ActivateSystem(AHappyInspectActor* InInspectActor)
 	InspectActorCloseUpLocation = Camera->GetComponentLocation() + Camera->GetForwardVector() * DistanceFromCamera;
 	InspectActorTakeLocation = Camera->GetComponentLocation() + Camera->GetUpVector() * DistanceBelowCameraForTake * -1.f;
 	InspectActorOriginalTransform = InspectedActor->GetActorTransform();
-	InspectedActor->SetSelectComponentHidden(true);
-	
+
+	InspectedActor->ActivateInspect();
 	OnBeforeSystemActivated.Broadcast(InInspectActor);
 }
 
@@ -48,24 +55,35 @@ void UHappyInspectSystem::DeactivateSystem()
 {
 	if (!InspectedActor)
 		return;
+	
+	if (!Camera)
+	{
+		UE_LOG(LogHappyInteractionsInspect, Error, TEXT("%s: Aborting, Camera is nullptr"), *FString(__FUNCTION__));
+		return;
+	}
 
 	OnBeforeSystemDeactivated.Broadcast(InspectedActor);
 	
 	if (State == EHappyInspectSystemState::Activating || State == EHappyInspectSystemState::Activated)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Inspection ended"));
 		State = EHappyInspectSystemState::Deactivating;
 		DeactivatedAt = GetOwner()->GetGameTimeSinceCreation();
 		InspectActorChangedRotation = InspectedActor->GetActorRotation();
-		InspectedActor->SetSelectComponentHidden(false);
 	}
 	
+	InspectedActor->DeactivateInspect();
 	OnAfterSystemDeactivated.Broadcast(InspectedActor);
 }
 
 void UHappyInspectSystem::TickComponent(float DeltaTime, ELevelTick Tick, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, Tick, ThisTickFunction);
+	
+	if (!Camera)
+	{
+		UE_LOG(LogHappyInteractionsInspect, Error, TEXT("%s: Aborting, Camera is nullptr"), *FString(__FUNCTION__));
+		return;
+	}
 
 	switch (State) {
 		case EHappyInspectSystemState::Activating:

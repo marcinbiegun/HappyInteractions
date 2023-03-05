@@ -3,16 +3,16 @@
 #include "Reaction/Activator/HappySelectActivator.h"
 #include "Select/HappySelectComponent.h"
 
-void UHappySelectActivator::Initialize(AActor* InOwner)
+void UHappySelectActivator::InitializeActivator(AActor* InOwner)
 {
-	Super::Initialize(InOwner);
+	Super::InitializeActivator(InOwner);
 
 	SelectComponent = Cast<UHappySelectComponent>(InOwner->GetDefaultSubobjectByName(SelectComponentName));
 	if (SelectComponent)
 		SelectComponent->OnSelectUsed.AddDynamic(this, &UHappySelectActivator::OnSelectComponentUsed);
 }
 
-void UHappySelectActivator::Deinitialize(AActor* InOwner)
+void UHappySelectActivator::DeinitializeActivator(AActor* InOwner)
 {
 	if (SelectComponent)
 	{
@@ -20,7 +20,7 @@ void UHappySelectActivator::Deinitialize(AActor* InOwner)
 		SelectComponent = nullptr;
 	}
 	
-	Super::Deinitialize(InOwner);
+	Super::DeinitializeActivator(InOwner);
 }
 
 void UHappySelectActivator::OnSelectComponentUsed(AActor* InExecutor)

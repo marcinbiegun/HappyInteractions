@@ -15,7 +15,7 @@ class UHappyAction;
  * When fired manually or by using an activator, it checks all conditions and if they all are satisfied it
  * will run all actions.
  */
-UCLASS(BlueprintType, Blueprintable, ClassGroup="HappyInteractions", meta=(DisplayName = "Reaction Component", BlueprintSpawnableComponent))
+UCLASS(BlueprintType, Blueprintable, ClassGroup="HappyInteractions", meta=(DisplayName = "Reaction", BlueprintSpawnableComponent))
 class HAPPYINTERACTIONS_API UHappyReactionComponent : public UActorComponent
 {
 	GENERATED_BODY()

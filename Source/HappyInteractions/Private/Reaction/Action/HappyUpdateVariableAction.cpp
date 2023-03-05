@@ -11,7 +11,8 @@ void UHappyUpdateVariableAction::ExecuteAction_Implementation(const AActor* Owne
 	if (GameVariableName.IsNone())
 		return;
 
-	if (const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(this))
+	//if (const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(this))
+	if (const UGameInstance* GameInstance = GetWorld()->GetGameInstance())
 	{
 		if (UHappyVariableSubsystem* VariablesSubsystem = GameInstance->GetSubsystem<UHappyVariableSubsystem>())
 		{

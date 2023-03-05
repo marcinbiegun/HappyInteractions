@@ -1,6 +1,9 @@
 ﻿// Copyright SpaceCatLabs. All Rights Reserved.
 
 #include "Select/HappySelectComponent.h"
+#include "Utils/HappyGlobals.h"
+
+DEFINE_LOG_CATEGORY(LogHappyInteractionsSelectComponent)
 
 UHappySelectComponent::UHappySelectComponent()
 {
@@ -29,8 +32,7 @@ void UHappySelectComponent::BeginPlay()
 		{
 			if (StaticMesh->NaniteSettings.bEnabled)
 			{
-				// TODO: LogTemp
-				UE_LOG(LogTemp, Error, TEXT("Desired selectable static mesh component of name %s will not highlight, because it has nanite enabled"), *StaticMeshComponent->GetName());
+				UE_LOG(LogHappyInteractionsSelectComponent, Error, TEXT("%s: StaticMeshComponent \"%s\" will not highlight, because it has nanite enabled"), *StaticMeshComponent->GetName(), *FString(__FUNCTION__));
 			}
 		}
 	}
@@ -43,8 +45,7 @@ void UHappySelectComponent::BeginPlay()
 		
 	if (SelectableComponents.IsEmpty())
 	{
-		// TODO: LogTemp
-		UE_LOG(LogTemp, Error, TEXT("Unable to find StaticMeshComponents parented by this, it's not be possible to display that the object is selected"));
+		UE_LOG(LogHappyInteractionsSelectComponent, Error, TEXT("%s: No highlightable StaticMeshComponents were found"), *FString(__FUNCTION__));
 	}
 }
 
